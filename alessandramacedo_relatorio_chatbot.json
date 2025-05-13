@@ -1,0 +1,965 @@
+{
+  "name": "alessandramacedo_relatorio_chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -600,
+        0
+      ],
+      "id": "0552514f-615e-4c4c-b81a-22e26cefd813",
+      "name": "Inicio",
+      "webhookId": "157891c9-f630-4cee-ae3c-958cc6cd23a8",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Ig2HfrMOBp8mc0dKcqr8vCy0n6dFG7Jsuba-Lq0Y_nY",
+          "mode": "list",
+          "cachedResultName": "NutriSave",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ig2HfrMOBp8mc0dKcqr8vCy0n6dFG7Jsuba-Lq0Y_nY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ig2HfrMOBp8mc0dKcqr8vCy0n6dFG7Jsuba-Lq0Y_nY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nome completo": "={{ $('Nome Completo').item.json.result.text }}",
+            "Data de Nascimento": "={{ $('Agendar').item.json.result.text }}",
+            "Telefone": "={{ $('Telefone').item.json.result.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nome completo",
+              "displayName": "Nome completo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data de Nascimento",
+              "displayName": "Data de Nascimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "E-mail",
+              "displayName": "E-mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Telefone",
+              "displayName": "Telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1160,
+        -120
+      ],
+      "id": "3f5053a7-acfa-433f-b822-fa3a8c13c3b6",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7jjmy4qf788KcoNl",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        440,
+        340
+      ],
+      "id": "f95f46ea-8d76-4aa9-9b0f-b5515e0dbb5c",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "QSauCOheCwwMLo3t",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Inicio').item.json.message.chat.id }}",
+        "text": "Estas são as datas disponíveis para agendamento: \n\n1 - 18/05 às 10h \n2 - 20/05 às 14h \n3 - 30/05 às 09h \n\nPor favor, responda com o número da opção desejada.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        980,
+        -120
+      ],
+      "id": "6ca94f52-5db9-497b-a5cc-9ea4e0298315",
+      "name": "Agendar consulta",
+      "webhookId": "91f721e9-5c59-4a4e-91df-cd9d19120b57",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        -120
+      ],
+      "id": "16805123-0f9b-427c-98bc-58ee05948bd2",
+      "name": "Wait",
+      "webhookId": "593a75e1-2572-4985-8d4b-842fe701ae69"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Inicio').item.json.message.chat.id }} {{ $json.message.text }}",
+        "text": "Relate suas dificuldades com relação a alimentação",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -140,
+        140
+      ],
+      "id": "1bbf8d49-60c3-4877-ab67-095a6265b8de",
+      "name": "Perguntar",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Que maravilha você dar esse novo passo! \nVou precisar de algumas informações para dar continuidade ao agendamento da sua consulta:\n\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -140,
+        -60
+      ],
+      "id": "c15224b5-e86c-48ee-a092-b4a69e894eb4",
+      "name": "Agendar",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Inicio').item.json.message.chat.id }}",
+        "text": "Olá, seja bem-vindo(a) ao NutriSave!\n\nEste é o seu espaço para aprender mais sobre saúde e agendar suas consultas.\nEscolha uma opção:\n\n1 - Agendar consulta\n2 - Tirar uma dúvida com a NutrIA\n\nResponda com o número da opção desejada.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        -300
+      ],
+      "id": "ab87ee3b-b1eb-4016-89c8-b69413b127b3",
+      "name": "Menu",
+      "webhookId": "6446433e-e16c-44fc-a890-38b3d1f17ad7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        -120
+      ],
+      "id": "12124f6f-c236-4c11-962f-78aa8f08c9cc",
+      "name": "Wait3",
+      "webhookId": "593a75e1-2572-4985-8d4b-842fe701ae69"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d4e9a02c-7319-4aa1-88e9-398662c7fbc8",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "/start"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "68d2ec60-b3aa-4a14-90ef-4221d6f0336c",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fc61b2d5-dcc1-4f3c-b2e0-5422cb7ebdc5",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -380,
+        0
+      ],
+      "id": "817280cf-c34e-4758-9622-2eee007a4372",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        -120
+      ],
+      "id": "9b17a7d2-5e3b-4022-885f-65ec891a0f0e",
+      "name": "Wait4",
+      "webhookId": "593a75e1-2572-4985-8d4b-842fe701ae69"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        -120
+      ],
+      "id": "35fd173f-c136-4ec7-a331-685f34965d11",
+      "name": "Wait5",
+      "webhookId": "593a75e1-2572-4985-8d4b-842fe701ae69"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.result.chat.id }}",
+        "text": "Nome Completo",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        60,
+        -100
+      ],
+      "id": "d0f3bbbc-6cce-4ef0-95d9-00b0a83aad34",
+      "name": "Nome Completo",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Inicio').item.json.message.chat.id }}",
+        "text": "Telefone\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        -120
+      ],
+      "id": "c31a94da-5640-428f-92c3-f21a33c0c4ec",
+      "name": "Telefone",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Nome Completo').item.json.result.chat.id }}",
+        "text": "Data de nascimento\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        380,
+        -120
+      ],
+      "id": "80df9615-aa14-44e5-a7ad-c02d97632949",
+      "name": "Data de nascimento",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Inicio').item.json.message.chat.id }}",
+        "text": "Agendamento realizado com sucesso!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1540,
+        -120
+      ],
+      "id": "057d93de-a357-48b0-b9da-580ae7ccb249",
+      "name": "finalizar agendamento",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.result.text }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1540,
+        500
+      ],
+      "id": "39677856-6331-4e5f-9df8-9d3e093e66f0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Perguntar').item.json.result.text }}",
+        "options": {
+          "systemMessage": "Você é uma nutricionista acolhedora, didática e empática, focada em educação alimentar para adultos. Converse de forma contínua, oferecendo orientações sobre alimentação saudável e bem-estar de forma clara, gentil e acessível, sem prescrever dietas, exames ou diagnósticos.\n\nA cada nova interação, cumprimente a usuária de forma amigável e pergunte qual é a sua principal dúvida ou interesse relacionado à alimentação ou bem-estar. Utilize respostas práticas, leves e acolhedoras.\n\nSempre que perceber a necessidade de um acompanhamento individual, incentive a usuária a buscar um nutricionista qualificado.\n\nMantenha uma linguagem leve, feminina e empática, criando um ambiente acolhedor e receptivo em todas as respostas."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        460,
+        120
+      ],
+      "id": "146d8376-65b8-42e4-848e-87efe082edd9",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        620
+      ],
+      "id": "8e984150-5db5-4052-a1ec-5a898118a229",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Retornar informações sobre a área de nutrição e alimentação",
+        "url": "={{ $fromAI('URL', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        360
+      ],
+      "id": "d261f79c-037a-4b24-9aec-acdcae9024ff",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        500
+      ],
+      "id": "4e0f5765-3865-4c05-ba26-f3b84c363a6e",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "8NP1k70spg6sbWMo",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        580,
+        360
+      ],
+      "id": "c7c158f2-0512-4f75-9e8a-ac1f61480ed4",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "IJWOKAUW2vYIFFuN",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('Inicio').item.json.message.chat.id }}\n"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        100,
+        140
+      ],
+      "id": "d38c243f-fc4b-41fd-a478-cf387eba9919",
+      "name": "Responder IA",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1220,
+        500
+      ],
+      "id": "77839747-56c8-421f-8148-5e17f9628d12",
+      "name": "Wait1",
+      "webhookId": "593a75e1-2572-4985-8d4b-842fe701ae69"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('Inicio').item.json.message.chat.id }}\n"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1720,
+        660
+      ],
+      "id": "c67dcee7-6062-4a41-ba1c-14a8882c1437",
+      "name": "Responder IA1",
+      "webhookId": "67febaba-29b9-449f-9d43-d870d6d6bdd7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={\n  \"parameters\": {\n    \"chatId\": \"={{ $json.message.chat.id }}\",\n    \"text\": \"={{ $json.output }}\",\n    \"additionalFields\": {\n      \"appendAttribution\": false\n    }\n  },\n  \"type\": \"n8n-nodes-base.telegram\",\n  \"typeVersion\": 1.2,\n  \"position\": [880, 120],\n  \"id\": \"3194e278-8a2c-452f-9fca-ecefb4b063e0\",\n  \"name\": \"Telegram\"\n}\n",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1280,
+        660
+      ],
+      "id": "4a14a703-bde4-445a-a41a-2521e9d2bf7f",
+      "name": "Telegram1",
+      "webhookId": "66ceda0c-40b0-4cd7-9270-cd2014479662",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "00c5b50a-89a1-4832-8640-106185764877",
+              "name": "result.message_id",
+              "value": "={{ $('Perguntar').item.json.result.text }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1500,
+        660
+      ],
+      "id": "c126b0cf-0816-4946-b8b6-1c2bb104fc9b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "=={{ $('Inicio').item.json.message.chat.id }}",
+        "text": "= ={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        120
+      ],
+      "id": "3194e278-8a2c-452f-9fca-ecefb4b063e0",
+      "name": "Telegram",
+      "webhookId": "c15a3452-3a25-483d-a8aa-b9a4fe5baeac",
+      "credentials": {
+        "telegramApi": {
+          "id": "bMpdO07F0MoCt53V",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Inicio": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendar consulta": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "finalizar agendamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perguntar": {
+      "main": [
+        [
+          {
+            "node": "Responder IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendar": {
+      "main": [
+        [
+          {
+            "node": "Nome Completo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Menu": {
+      "main": [
+        []
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Agendar consulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agendar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Perguntar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Telefone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Data de nascimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nome Completo": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telefone": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data de nascimento": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "finalizar agendamento": {
+      "main": [
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder IA": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        []
+      ]
+    },
+    "Wait1": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d7bf99b8-c40b-4763-bb40-a5a863b159a1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f79fd23c0b3c36c40989034d705963a9bba8a3c0481139826627129af33bdf50"
+  },
+  "id": "5x37qYwCu4pgFf01",
+  "tags": []
+}
